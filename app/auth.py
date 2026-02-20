@@ -1,17 +1,17 @@
 import os
 import secrets
+import bcrypt
 from datetime import datetime, timezone
 from fastapi import Cookie, HTTPException, status
-from passlib.hash import bcrypt
 from app.db import get_conn
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hash(password)
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    return bcrypt.verify(password, password_hash)
+    return bcrypt.checkpw(password.encode(), password_hash.encode())
 
 
 def create_session(user_id: int) -> str:
