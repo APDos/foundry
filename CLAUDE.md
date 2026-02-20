@@ -1,36 +1,56 @@
-# CLAUDE.md
+# Project: AI Template Marketplace
 
-This file provides guidance to Claude Code when working with this repository.
+## What We're Building
+A marketplace where sellers can list and sell AI prompt templates and instructions that help buyers replace or replicate common SaaS tools. Buyers browse listings, purchase templates, and get access to structured prompt content. Sellers upload their templates and receive payouts via Stripe Connect.
 
-## Project Overview
+This is a side project — prioritise simplicity and getting things working over clever abstractions. Avoid over-engineering.
 
-<!-- Describe what this project does -->
+## Stack
+- **Frontend:** HTML, CSS, HTMX (for dynamic behaviour without a JS framework)
+- **Backend:** FastAPI (Python)
+- **Database:** PostgreSQL
+- **Payments:** Stripe Connect (marketplace payouts to sellers)
+- **Auth:** Session-based auth, rolled manually with FastAPI + PostgreSQL
 
-## Development Setup
+## Core Tables
 
-<!-- Add setup instructions, e.g.:
-```
-npm install
-npm run dev
-```
--->
+### users
+- id, email, password_hash, created_at
+- role: can be buyer, seller, or both (use a flags or enum approach)
 
-## Common Commands
+### listings
+- id, seller_id (fk users), title, description, price, category
+- saas_tool (the tool this template replaces e.g. "Retool", "Tableau")
+- preview (text) — visible to all users before purchase
+- content (jsonb) — full structured template, only accessible after purchase
+- created_at, updated_at, status (draft/active/archived)
 
-<!-- List frequently used commands, e.g.:
-- `npm test` - run tests
-- `npm run build` - build the project
-- `npm run lint` - lint the code
--->
+### purchases
+- id, buyer_id (fk users), listing_id (fk listings), amount_paid, created_at
+- This is the access control layer — a buyer can access a listing's content only if a purchase record exists
 
-## Architecture
+### reviews
+- id, purchase_id (fk purchases), buyer_id (fk users), listing_id (fk listings)
+- rating (1-5), body (text), created_at
+- Only buyers with a verified purchase can leave a review
 
-<!-- Describe the high-level architecture and key directories -->
+### payouts
+- id, seller_id (fk users), listing_id (fk listings), purchase_id (fk purchases)
+- amount, stripe_transfer_id, status, created_at
 
-## Code Style & Conventions
+## Content Storage Decision
+Template content is stored as `jsonb` in the database — not as file downloads. This keeps things simple while allowing structured multi-step templates (e.g. each step has a prompt and instructions). A plain text `preview` field on listings is shown to non-buyers as a teaser.
 
-<!-- Document any style guidelines, naming conventions, or patterns to follow -->
+## Core User Flows
+1. **Browse** — any visitor can see listings, titles, descriptions, categories, and previews
+2. **Purchase** — authenticated buyer pays via Stripe, purchase record is created, content is unlocked
+3. **Access** — buyer views full jsonb content of purchased listings in their account
+4. **Sell** — authenticated seller creates a listing, fills in metadata, writes structured content, sets price, publishes
+5. **Payout** — seller receives their share via Stripe Connect when a sale is made
 
-## Notes for Claude
-
-<!-- Add any specific instructions or context for Claude Code when working in this repo -->
+## Conventions
+- Keep routes and logic simple and readable — this is a side project, not a startup
+- Use PostgreSQL directly with a lightweight library like `asyncpg` or `psycopg2`, no ORM
+- HTMX for any dynamic frontend behaviour, avoid writing vanilla JS where possible
+- Commit frequently — before starting any significant new feature
+- Build and validate each feature end to end before moving to the next one
