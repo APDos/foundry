@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="form-narrow">
+  <h1>Create account</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="/register">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required autofocus />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="8" />
+    </div>
+    <div class="form-group" style="flex-direction:row;align-items:center;gap:0.5rem">
+      <input type="checkbox" id="is_seller" name="is_seller" value="true" />
+      <label for="is_seller" style="font-weight:400">I also want to sell templates</label>
+    </div>
+    <button type="submit" class="btn">Create account</button>
+  </form>
+  <p style="margin-top:1rem;font-size:0.875rem">Already have an account? <a href="/login">Log in</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}New Listing{% endblock %}
+{% block content %}
+<h1>Create a listing</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" action="/sell/new" style="max-width:640px">
+  <div class="form-group">
+    <label>Title</label>
+    <input type="text" name="title" required placeholder="e.g. Retool Dashboard Builder" />
+  </div>
+  <div class="form-group">
+    <label>SaaS tool this replaces</label>
+    <input type="text" name="saas_tool" required placeholder="e.g. Retool" />
+  </div>
+  <div class="form-group">
+    <label>Category</label>
+    <input type="text" name="category" required placeholder="e.g. Data & Analytics" />
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <textarea name="description" required placeholder="What does this template do?"></textarea>
+  </div>
+  <div class="form-group">
+    <label>Preview (shown to non-buyers)</label>
+    <textarea name="preview" required placeholder="A short teaser of what's inside…"></textarea>
+  </div>
+  <div class="form-group">
+    <label>Price (in cents, e.g. 999 = $9.99)</label>
+    <input type="number" name="price" required min="100" placeholder="999" />
+  </div>
+  <div class="form-group">
+    <label>Content (JSON — full template steps)</label>
+    <textarea name="content" required style="min-height:200px;font-family:monospace" placeholder='[{"step": 1, "prompt": "…", "instructions": "…"}]'></textarea>
+  </div>
+  <button type="submit" class="btn">Save as draft</button>
+</form>
+{% endblock %}

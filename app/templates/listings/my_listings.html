@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Listings{% endblock %}
+{% block content %}
+<h1>My Listings</h1>
+<a href="/sell/new" class="btn" style="margin-bottom:1.5rem;display:inline-block">+ New listing</a>
+
+{% if listings %}
+<table style="width:100%;border-collapse:collapse;font-size:0.9rem">
+  <thead>
+    <tr style="text-align:left;border-bottom:2px solid #e5e7eb">
+      <th style="padding:0.5rem">Title</th>
+      <th>Price</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for l in listings %}
+    <tr style="border-bottom:1px solid #e5e7eb">
+      <td style="padding:0.6rem 0.5rem"><a href="/listings/{{ l.id }}">{{ l.title }}</a></td>
+      <td>${{ (l.price / 100) | round(2) }}</td>
+      <td>{{ l.status }}</td>
+      <td>
+        {% if l.status == 'draft' %}
+        <form method="post" action="/listings/{{ l.id }}/publish" style="display:inline">
+          <button type="submit" class="btn btn-outline" style="font-size:0.8rem;padding:0.3rem 0.75rem">Publish</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p style="color:#6b7280">You haven't created any listings yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}My Purchases{% endblock %}
+{% block content %}
+<h1>My Purchases</h1>
+
+{% if purchases %}
+  {% for p in purchases %}
+  <div class="card" style="max-width:720px;margin-bottom:1rem">
+    <span class="tag">{{ p.saas_tool }}</span>
+    <h3><a href="/listings/{{ p.id }}">{{ p.title }}</a></h3>
+    <p class="meta">{{ p.category }} &middot; Paid ${{ (p.amount_paid / 100) | round(2) }} on {{ p.created_at.strftime("%d %b %Y") }}</p>
+    <h2 style="margin-top:0.75rem;font-size:0.95rem">Template Content</h2>
+    <div class="content-block">{{ p.content | tojson(indent=2) }}</div>
+  </div>
+  {% endfor %}
+{% else %}
+  <p style="color:#6b7280;margin-top:1rem">No purchases yet. <a href="/">Browse listings</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div class="form-narrow">
+  <h1>Log in</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="/login">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required autofocus />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+    </div>
+    <button type="submit" class="btn">Log in</button>
+  </form>
+  <p style="margin-top:1rem;font-size:0.875rem">No account? <a href="/register">Sign up</a></p>
+</div>
+{% endblock %}

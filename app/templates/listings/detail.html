@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }}{% endblock %}
+{% block content %}
+<div class="listing-detail">
+  <span class="tag">{{ listing.saas_tool }}</span>
+  <h1 style="margin-top:0.5rem">{{ listing.title }}</h1>
+  <p class="meta">{{ listing.category }} &middot; by {{ listing.seller_email }}</p>
+
+  <div class="price-row">
+    <span class="price">${{ (listing.price / 100) | round(2) }}</span>
+    <span class="meta">⭐ {{ "%.1f"|format(listing.avg_rating) }} ({{ listing.review_count }} reviews)</span>
+  </div>
+
+  <p>{{ listing.description }}</p>
+
+  <h2 style="margin-top:1.5rem">Preview</h2>
+  <div class="content-block">{{ listing.preview }}</div>
+
+  {% if purchased %}
+    <h2 style="margin-top:1.5rem">Full Template</h2>
+    <div class="content-block">{{ listing.content | tojson(indent=2) }}</div>
+  {% else %}
+    <div style="margin-top:1.5rem">
+      {% if user %}
+        <form method="post" action="/listings/{{ listing.id }}/buy">
+          <button type="submit" class="btn">Buy for ${{ (listing.price / 100) | round(2) }}</button>
+        </form>
+      {% else %}
+        <a href="/login" class="btn">Log in to purchase</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if reviews %}
+  <div class="reviews">
+    <h2>Reviews</h2>
+    {% for r in reviews %}
+    <div class="review-card">
+      <div class="stars">{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</div>
+      <p style="margin-top:0.5rem">{{ r.body }}</p>
+      <p class="meta" style="margin-top:0.35rem">{{ r.buyer_email }} &middot; {{ r.created_at.strftime("%b %Y") }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

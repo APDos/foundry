@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Browse Templates — AI Template Marketplace{% endblock %}
+{% block content %}
+<h1>AI Prompt Templates</h1>
+<p class="subtitle">Replace your SaaS tools with structured AI workflows.</p>
+
+{% if listings %}
+  <div class="listings-grid">
+    {% for l in listings %}
+    <div class="card">
+      <span class="tag">{{ l.saas_tool }}</span>
+      <h3><a href="/listings/{{ l.id }}">{{ l.title }}</a></h3>
+      <p class="meta">{{ l.category }} &middot; by {{ l.seller_email }}</p>
+      <p class="preview">{{ l.preview[:120] }}{% if l.preview|length > 120 %}…{% endif %}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem">
+        <span class="price">${{ (l.price / 100) | round(2) }}</span>
+        <span class="meta">⭐ {{ "%.1f"|format(l.avg_rating) }} ({{ l.review_count }})</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p style="margin-top:2rem;color:#6b7280">No listings yet. Check back soon!</p>
+{% endif %}
+{% endblock %}
